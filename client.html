@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>BaseStation Data Collection</title>
+</head>
+
+<body>
+    <script type="text/javascript">
+        var socket;
+        var time;
+       
+        if (!window.WebSocket) 
+        {
+            window.WebSocket = window.MozWebSocket;
+        }
+        if (window.WebSocket) 
+        {
+            //socket = new WebSocket("ws://192.168.58.133:8080/");
+            socket = new WebSocket("ws://192.168.1.211:9001/");
+            //soket.onmessage = getmsg
+            socket.onmessage = function (event) 
+            {
+                var ta = document.getElementById('responseText');
+
+                ta.value = ta.value + '\n' +time+'   '+'INFO'+'   '+'#'+event.data;
+                //ta.value = ta.value + '\n' +event.data;
+            };
+            socket.onopen = function (event) 
+            {
+                var ta = document.getElementById('responseText');
+                ta.value = "连接开启!";
+              
+                
+                
+                   // setTimeout(socket.send('{"message":"ue_get","stats":true}'),1000);
+                   window.setInterval("send_timer();",1000);   //每隔1s执行一次
+                
+                    
+                
+                
+            };
+            socket.onclose = function (event) 
+            {
+                var ta = document.getElementById('responseText');
+                ta.value = ta.value + "连接被关闭";
+            };
+            //window.setInterval(socket.send('{"message":"ue_get","stats":true}'),500);
+        } 
+        else 
+        {
+            alert("你的浏览器不支持 WebSocket！");
+        }
+        /*
+        function send_to_bs()
+        {
+            socket.send('{"message":"ue_get","stats":true}');
+        }
+        */
+
+        function send_timer()
+        {	
+        
+        var date=new Date();    
+		var hour=date.getHours(); //获取小时   
+		var minutes=date.getMinutes(); //获取分钟   
+		var second=date.getSeconds(); //获取秒   
+        time=hour+':'+minutes+':'+second;
+        
+        socket.send('{"message":"ue_get","stats":true}');
+
+		 }
+
+
+        function send(message) 
+        {
+            if (!window.WebSocket) 
+            {
+                return;
+            }
+            
+            if (socket.readyState == WebSocket.OPEN)
+             {
+                socket.send(message);
+            } 
+            else 
+            
+            {
+                alert("连接未开启.");
+            }
+        }
+    </script>
+
+   
+     
+    <form onsubmit="return false;">
+        <h3>BaseStation Data Collection</h3>
+        
+        <textarea id="responseText" style="width: 2000px; height: 1000px;"></textarea>
+        <br>
+      
+    </form>
+    <br>
+    <br>
+    
+</body>
+
+</html>
