@@ -1,2 +1,1 @@
-# bs_collection_-
-websocket 基站数据上报
+# websocket 基站数据上报
